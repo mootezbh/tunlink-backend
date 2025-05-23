@@ -1,123 +1,79 @@
-The starter repo serves as an excellent foundation for a NestJS project!
+# TunLink Backend
 
-Here’s what’s included in the starter repos:
+A URL shortener backend service built with NestJS, featuring PostgreSQL for data persistence and Redis for caching.
 
-- Adding to the tsconfig.json file
-- Setting up the ConfigModule and environment variables for Jest
-- Enforcing consistent HTTP response structure
-- Configuring some basic HTTP security
-- Adding whitelisted validation to the NestJS server
-- Setting up NestJS logging
-- Docker compose set up for a Postgres database & Redis
-- Prisma setup (the ORM we’ll be using in each project to interact with the database)
-- Redis and CacheService setup
-- Jest config (including env variables)
-- Setting up a CI Pipeline using Github Actions
+## Features
 
-Here's how to get started with the repo:
+- URL shortening with custom slug support
+- PostgreSQL database for storing URL mappings
+- Built with NestJS framework
+- Docker containerization
+- Comprehensive testing setup (Unit, Integration, E2E)
 
-## Cloning the repo
+## Prerequisites
 
-Follow these steps to get started:
+- Node.js
+- pnpm
+- Docker and Docker Compose
 
-1. Go to the [NestJS Starter Github repo](https://github.com/mootezbh/nestjs-starter)
-2. Press the Use this template button
-3. Follow the steps to create a new Github repo from the template
-4. Git clone your new repo onto your local machine. For example:
+## Getting Started
+
+1. Install dependencies:
+
+   ```bash
+   pnpm install
+   ```
+
+2. Set up environment variables:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+3. Start the Docker containers (PostgreSQL and Redis):
+
+   ```bash
+   pnpm docker:start
+   ```
+
+4. Run database migrations:
+
+   ```bash
+   pnpm db:migrate:dev
+   ```
+
+5. Start the development server:
+
+   ```bash
+   pnpm start:dev
+   ```
+
+   The server will be running at `http://localhost:3000` by default.
+
+## Testing
+
+The project includes different types of tests:
+
+- Unit tests: `pnpm test`
+- Integration tests: `pnpm test:int`
+- E2E tests: `pnpm test:e2e`
+
+## Project Structure
 
 ```
-git clone git@github.com:tomwray13/url-shortener.git
+src/
+├── modules/url/         # URL shortening module
+├── core/               # Core functionality (caching, logging)
+├── database/           # Database configuration and Prisma setup
+├── config/            # Application configuration
+└── services/          # Shared services
 ```
 
-Checkout into your new repo and follow the steps below:
+## Technologies
 
-## Local set up
-
-Install dependencies:
-
-```
-pnpm install
-```
-
-Copy the env example file.
-
-```
-cp .env.example .env
-```
-
-
-The NestJS server has 2 Docker Compose files. In both file, you need to update the name of the containers and networks where it says `# Needs updating`.
-
-For example, here's an updated `docker-compose.yml` file for a project called "Url Shortener":
-
-```yml
-version: '3.8'
-
-services:
-  postgres_url_shortener: # Updated
-    image: postgres:alpine
-    container_name: postgres_url_shortener # Updated
-    restart: always
-    env_file:
-      - .env
-    environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-    ports:
-      - '5432:5432'
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-
-  redis_url_shortener: # Updated
-    image: redis:alpine
-    container_name: redis_url_shortener # Updated
-    ports:
-      - '6379:6379'
-    volumes:
-      - redis_data:/data
-
-networks:
-  default:
-    name: url_shortener # Updated
-
-volumes:
-  postgres_data:
-  redis_data:
-```
-
-Make sure you remember to also update the `docker-compose-test.yml` file!
-
-This repo comes with a default `User` model out of the box defined in the `/apps/backend/src/database/prisma.schema` file:
-
-```json
-model User {
-  id        Int       @id @default(autoincrement())
-  email     String    @unique
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-}
-```
-
-Before you can run the local server, you need to apply this migration to your local Postgres database.
-
-Make sure on your local machine you don't have any existing Docker containers running that would cause a conflict.
-
-Then spin up the local Postgres database using this script:
-
-```shell
-pnpm docker:start
-```
-
-Then run this script to apply the migration to your local Postgres database:
-
-```shell
-pnpm db:migrate:dev
-```
-
-And that's it!
-
-You can now spin up your local server with this script:
-
-```shell
-pnpm start:dev
-```
+- NestJS - Backend framework
+- Prisma - Database ORM
+- PostgreSQL - Primary database
+- Redis - Caching layer
+- Docker - Containerization
+- Jest - Testing framework
